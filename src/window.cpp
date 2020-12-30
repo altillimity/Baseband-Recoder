@@ -1,4 +1,5 @@
 #include "window.h"
+#include <dsp/fir_gen.h>
 
 bool BasebandRecorderApp::OnInit()
 {
@@ -76,10 +77,12 @@ bool BasebandRecorderApp::OnInit()
         font.SetWeight(wxFONTWEIGHT_BOLD);
         recordingLabel->SetFont(font);
     }
+    decimationLabel = new wxStaticText((wxFrame *)recordingPanel, 0, "Decimation : ", wxPoint(15, 29));
+    decimationSpin = new wxSpinCtrl((wxFrame *)recordingPanel, 0, "1", wxPoint(110, 19));
     startButton = new wxButton((wxFrame *)recordingPanel, START_RECORD_BTN_ID, _T("Start"), wxPoint(15, 85), wxDefaultSize, 0);
     stopButton = new wxButton((wxFrame *)recordingPanel, STOP_RECORD_BTN_ID, _T("Stop"), wxPoint(105, 85), wxDefaultSize, 0);
-    recordingStatusLabel = new wxStaticText((wxFrame *)recordingPanel, 0, "State : IDLE", wxPoint(15, 40));
-    recordingDataSizeLabel = new wxStaticText((wxFrame *)recordingPanel, 0, "Data out : 0.00 MB", wxPoint(15, 60));
+    recordingStatusLabel = new wxStaticText((wxFrame *)recordingPanel, 0, "State : IDLE", wxPoint(15, 47));
+    recordingDataSizeLabel = new wxStaticText((wxFrame *)recordingPanel, 0, "Data out : 0.00 MB", wxPoint(15, 65));
     stopButton->Disable();
 
     mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -135,6 +138,10 @@ bool BasebandRecorderApp::OnInit()
 
             datasize = 0;
 
+            decimation = decimationSpin->GetValue();
+            resampler = std::make_shared<libdsp::RationalResamplerCCF>(1, decimation, libdsp::firgen::design_resampler_filter_float(1, decimation, 0.4));
+
+            decimationSpin->Disable();
             startButton->Disable();
             stopButton->Enable();
             recording = true;
@@ -149,6 +156,7 @@ bool BasebandRecorderApp::OnInit()
 
             stopButton->Disable();
             startButton->Enable();
+            decimationSpin->Enable();
 
             recordingStatusLabel->SetLabelText("State : IDLE ");
         }

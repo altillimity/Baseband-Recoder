@@ -1,4 +1,5 @@
 #include "window.h"
+#include <dsp/rational_resampler.h>
 
 #if BUILD_AIRSPY
 static int _rx_callback(airspy_transfer *t)
@@ -189,6 +190,11 @@ void BasebandRecorderApp::fileThreadFunction()
         int cnt = fileFifo.pop(sample_buffer2, BUFFER_SIZE, 1000);
         if (recording)
         {
+            if (decimation > 1)
+            {
+                cnt = resampler->work(sample_buffer2, cnt, sample_buffer2);
+            }
+
             for (int i = 0; i < cnt; i++)
             {
                 buffer_i16[i * 2 + 0] = sample_buffer2[i].real() * 1000;

@@ -4,7 +4,8 @@
 #endif
 
 #include "ids.h"
-#include "wx/sizer.h"
+#include <wx/sizer.h>
+#include <wx/spinctrl.h>
 #include "panadapter.h"
 
 #ifndef BUILD_AIRSPY
@@ -27,6 +28,7 @@
 #include <fftw3.h>
 #include <dsp/agc.h>
 #include <dsp/pipe.h>
+#include <dsp/rational_resampler.h>
 
 #if BUILD_AIRSPY
 #include <libairspy/airspy.h>
@@ -73,6 +75,8 @@ private:
 
     // Recording control widgets
     wxStaticText *recordingLabel;
+    wxStaticText *decimationLabel;
+    wxSpinCtrl *decimationSpin;
     wxButton *startButton, *stopButton;
     wxStaticText *recordingStatusLabel;
     wxStaticText *recordingDataSizeLabel;
@@ -110,6 +114,10 @@ private:
 #endif
     void startDSPThread();
     void initBuffers();
+
+private:
+    int decimation = 1;
+    std::shared_ptr<libdsp::RationalResamplerCCF> resampler;
 
 private:
     // FIFOs
