@@ -10,6 +10,7 @@ END_EVENT_TABLE()
 PanadapterWidget::PanadapterWidget(wxFrame *parent) : wxPanel(parent)
 {
     constellation_buffer = new float[1024];
+    std::fill(&constellation_buffer[0], &constellation_buffer[1024], 0);
 }
 
 void PanadapterWidget::render(wxDC &dc)
