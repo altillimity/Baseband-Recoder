@@ -90,6 +90,8 @@ private:
     wxTextCtrl *samplerateEntry;
     wxButton *startSDRButton;
     wxButton *stopSDRButton;
+    wxStaticText *scaleLabel;
+    wxSlider *scaleSlider;
 
 private:
     // Recording stuff
@@ -118,6 +120,9 @@ private:
 private:
     int decimation = 1;
     std::shared_ptr<libdsp::RationalResamplerCCF> resampler;
+
+private:
+    float fft_vertical_scale;
 
 private:
     // FIFOs

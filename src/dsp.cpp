@@ -243,8 +243,8 @@ void BasebandRecorderApp::dspThreadFunction()
                 float y = buffer_fft_out[BUFFER_SIZE / 2 + i].imag();
                 float z = sqrt(x * x + y * y);
 
-                buffer_fft_final[i] = (z);
-                buffer_fft_final[BUFFER_SIZE / 2 + i] = (c);
+                buffer_fft_final[i] = (z) * fft_vertical_scale;
+                buffer_fft_final[BUFFER_SIZE / 2 + i] = (c) * fft_vertical_scale;
             }
 
             for (int i = 0; i < 1024; i++)

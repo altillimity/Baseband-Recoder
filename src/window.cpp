@@ -5,6 +5,8 @@ bool BasebandRecorderApp::OnInit()
 {
     initBuffers();
 
+    fft_vertical_scale = 1.0f;
+
     BasebandRecorderWindow *frame = new BasebandRecorderWindow();
     frame->SetSize(1024, 600);
 
@@ -38,6 +40,8 @@ bool BasebandRecorderApp::OnInit()
     startSDRButton = new wxButton((wxFrame *)sdrPanel, START_SDR_BTN_ID, _T("Start"), wxPoint(5, 85), wxDefaultSize, 0);
     stopSDRButton = new wxButton((wxFrame *)sdrPanel, STOP_SDR_BTN_ID, _T("Stop"), wxPoint(95, 85), wxDefaultSize, 0);
     stopSDRButton->Disable();
+    scaleLabel = new wxStaticText((wxFrame *)sdrPanel, 0, "FFT\nScale :\n   5", wxPoint(140, 10));
+    scaleSlider = new wxSlider((wxFrame *)sdrPanel, SCALE_SLIDER_ID, 5, 1, 10, wxPoint(180, 2), wxSize(-1, 120), wxSL_VERTICAL + wxSL_INVERSE);
 
     settingsLabel = new wxStaticText((wxFrame *)settingsPanel, 0, "Settings", wxPoint(15, 10));
     {
@@ -190,6 +194,11 @@ bool BasebandRecorderApp::OnInit()
             rtlsdr_set_tuner_gain(rtl_sdr_dev, gain * 10);
 #endif
             gainValueLabel->SetLabelText(std::to_string(gain));
+        }
+        else if (event.GetId() == SCALE_SLIDER_ID)
+        {
+            fft_vertical_scale = (float)scaleSlider->GetValue() / 5.0f;
+            scaleLabel->SetLabelText("FFT\nScale :\n   " + std::to_string(scaleSlider->GetValue()));
         }
     });
 
