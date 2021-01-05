@@ -9,7 +9,7 @@
 #include "panadapter.h"
 
 #ifndef BUILD_AIRSPY
-#define BUILD_AIRSPY 0
+#define BUILD_AIRSPY 1
 #endif
 #ifndef BUILD_LIME
 #define BUILD_LIME 0
@@ -18,7 +18,7 @@
 #define BUILD_HACKRF 0
 #endif
 #ifndef BUILD_RTLSDR
-#define BUILD_RTLSDR 1
+#define BUILD_RTLSDR 0
 #endif
 
 #include "utils.h"
