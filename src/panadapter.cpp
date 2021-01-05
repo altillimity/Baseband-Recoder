@@ -30,11 +30,12 @@ void PanadapterWidget::render(wxDC &dc)
 
     float scale_ratio = (float)GetSize().GetWidth() / 1024.0f;
     int height = GetSize().GetHeight();
+    float scale_height = height / 80.0f;
 
     for (int i = 0; i < 1024 - 1; i++)
     {
-        dc.DrawLine(wxPoint(i * scale_ratio, abs(height - std::min((int)constellation_buffer[i], height))),
-                    wxPoint(i * scale_ratio + 1 * scale_ratio, abs(height - std::min((int)constellation_buffer[i + 1], height))));
+        dc.DrawLine(wxPoint(i * scale_ratio, abs(height - std::min((int)(constellation_buffer[i] * scale_height), height))),
+                    wxPoint(i * scale_ratio + 1 * scale_ratio, abs(height - std::min((int)(constellation_buffer[i + 1] * scale_height), height))));
     }
 }
 
