@@ -71,9 +71,12 @@ bool BasebandRecorderApp::OnInit()
 #endif
 
 #if BUILD_AIRSPY || BUILD_HACKRF
-    biasLabel = new wxStaticText((wxFrame *)settingsPanel, 0, "Bias-tee :", wxPoint(15, 100));
-    biasCheckBox = new wxCheckBox((wxFrame *)settingsPanel, BIAS_CHECKBOX_ID, "Enable", wxPoint(105, 97));
+    //biasLabel = new wxStaticText((wxFrame *)settingsPanel, 0, "Bias-tee :", wxPoint(15, 100));
+    biasCheckBox = new wxCheckBox((wxFrame *)settingsPanel, BIAS_CHECKBOX_ID, "Bias-tee", wxPoint(105, 97));
 #endif
+
+    agcCheckBox = new wxCheckBox((wxFrame *)settingsPanel, AGC_CHECKBOX_ID, "Agc", wxPoint(15, 97));
+    agcCheckBox->SetValue(true);
 
     recordingLabel = new wxStaticText((wxFrame *)recordingPanel, 0, "Recording", wxPoint(15, 10));
     {
@@ -218,6 +221,17 @@ bool BasebandRecorderApp::OnInit()
             hackrf_set_antenna_enable(hackrf_dev, bias);
         }
 #endif
+        if (event.GetId() == AGC_CHECKBOX_ID)
+        {
+            if (agcCheckBox->GetValue())
+            {
+                agc->set_rate(0.00001);
+            }
+            else
+            {
+                agc->set_rate(0);
+            }
+        }
     });
 
     frame->Show(true);

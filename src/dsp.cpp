@@ -211,7 +211,7 @@ void BasebandRecorderApp::fileThreadFunction()
 void BasebandRecorderApp::dspThreadFunction()
 {
     fftw_plan p = fftw_plan_dft_1d(BUFFER_SIZE, (fftw_complex *)buffer_fft_in, (fftw_complex *)buffer_fft_out, FFTW_FORWARD, FFTW_ESTIMATE);
-    libdsp::AgcCC agc = libdsp::AgcCC(0.00001, 1.0, 1.0, 1e5);
+    agc = std::make_shared<libdsp::AgcCC>(0.00001, 1.0, 1.0, 1e5);
 
     int refresh_per_second = 20;
     int runs_to_wait = (samplerate / BUFFER_SIZE) / (refresh_per_second * 3);
@@ -222,7 +222,7 @@ void BasebandRecorderApp::dspThreadFunction()
     {
         cnt = sdrPipe.pop(sample_buffer, BUFFER_SIZE, 1000);
 
-        agc.work(sample_buffer, cnt, sample_buffer);
+        agc->work(sample_buffer, cnt, sample_buffer);
 
         fileFifo.push(sample_buffer, cnt);
 
@@ -243,8 +243,8 @@ void BasebandRecorderApp::dspThreadFunction()
                 float y = buffer_fft_out[BUFFER_SIZE / 2 + i].imag();
                 float z = sqrt(x * x + y * y);
 
-                buffer_fft_final[i] = (z) * fft_vertical_scale;
-                buffer_fft_final[BUFFER_SIZE / 2 + i] = (c) * fft_vertical_scale;
+                buffer_fft_final[i] = (z)*fft_vertical_scale;
+                buffer_fft_final[BUFFER_SIZE / 2 + i] = (c)*fft_vertical_scale;
             }
 
             for (int i = 0; i < 1024; i++)

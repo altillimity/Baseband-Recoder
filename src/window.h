@@ -73,6 +73,8 @@ private:
     wxCheckBox *biasCheckBox;
 #endif
 
+    wxCheckBox *agcCheckBox;
+
     // Recording control widgets
     wxStaticText *recordingLabel;
     wxStaticText *decimationLabel;
@@ -116,6 +118,8 @@ private:
 #endif
     void startDSPThread();
     void initBuffers();
+
+    std::shared_ptr<libdsp::AgcCC> agc;
 
 private:
     int decimation = 1;
